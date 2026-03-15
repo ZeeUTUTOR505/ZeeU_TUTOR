@@ -223,12 +223,19 @@ elif st.session_state.page == "start_exam":
         horizontal=True
     )
 
+    exam_set = st.radio(
+        "เลือกชุดข้อสอบ",
+        [1, 2, 3],
+        horizontal=True
+    )
+
     if st.button("เริ่มทำข้อสอบ"):
         if not student_name:
             st.warning("กรุณากรอกชื่อก่อนเริ่มสอบ")
         else:
             st.session_state.student_name = student_name
             st.session_state.test_type = test_type
+            st.session_state.exam_set = exam_set
             st.session_state.page = "exam"
             st.rerun()
 
@@ -238,7 +245,12 @@ elif st.session_state.page == "exam":
     st.title(f"ข้อสอบระดับ {st.session_state.level.upper()}")
     st.write(f"👤 ผู้สอบ: {st.session_state.student_name}")
 
-    questions = load_questions(f"questions/{st.session_state.level}.json")
+    if st.session_state.test_type == "Pre-test":
+        question_path = f"questions/{st.session_state.level}_pretest_{st.session_state.exam_set}.json"
+    else:
+        question_path = f"questions/{st.session_state.level}_posttest_{st.session_state.exam_set}.json"
+
+    questions = load_questions(question_path)
     len_questions = len(questions)
     score = 0
     user_answers = []

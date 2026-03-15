@@ -14,7 +14,7 @@ import os
 import numpy as np
 from datetime import datetime, timedelta
 from reportlab.lib.styles import ParagraphStyle
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.platypus import Paragraph, Spacer, Table, TableStyle
 from reportlab.platypus import BaseDocTemplate, Frame, PageTemplate
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
