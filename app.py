@@ -250,14 +250,23 @@ elif st.session_state.page == "exam":
     else:
         question_path = f"questions/{st.session_state.level}_posttest_{st.session_state.exam_set}.json"
 
+    import random
+
     questions = load_questions(question_path)
+    seed = hash(st.session_state.student_name)
+    rnd = random.Random(seed)
+
+    questions = questions.copy()
+    rnd.shuffle(questions)
     len_questions = len(questions)
     score = 0
     user_answers = []
 
-    for q in questions:
+    for i, q in enumerate(questions, start=1):
+
         st.markdown('<div class="exam-box">', unsafe_allow_html=True)
-        st.subheader(f"ข้อที่ {q['no']}")
+
+        st.subheader(f"ข้อที่ {i}")
         st.write(q["question"])
 
         if q.get("image"):
@@ -266,20 +275,27 @@ elif st.session_state.page == "exam":
                 st.image(image_path, width=300)
 
         if q["choices"]:
+            choices = q["choices"].copy()
+            rnd.shuffle(choices)
+
             ans = st.radio(
                 "เลือกคำตอบ",
-                q["choices"],
-                key=f"q_{q['no']}",
+                choices,
+                key=f"q_{i}",
                 index=None
             )
+
         elif q["choices"] is None:
             ans = st.text_input(
                 "คำตอบ",
-                key=f"q_{q['no']}"
+                key=f"q_{i}"
             )
+
         else:
             ans = ""
+
         user_answers.append((q, str(ans)))
+
         st.markdown('</div>', unsafe_allow_html=True)
 
     if st.button("ส่งคำตอบ"):
