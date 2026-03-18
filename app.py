@@ -47,46 +47,42 @@ if st.session_state.page == "home":
     """, unsafe_allow_html=True)
 
     # Navbar
-    nav1, nav2, nav3, nav4, nav5, nav6, nav7 = st.columns(
-        [3, 1, 1, 1, 1, 1, 1])
-
+    nav1, nav2, nav3, nav4, nav5, nav6, nav7, nav8 = st.columns(
+        [2.5, 1.3, 1, 1, 1, 1, 1, 1]
+    )
     with nav1:
         st.markdown("### ZeeU TUTOR")
 
     with nav2:
-        if st.button("ทดลองทำข้อสอบ"):
-            st.session_state.ask_password = True
-            # st.session_state.page = "select_exam"
+        if st.button("ทดสอบก่อนสมัคร"):
+            st.toast("🧠 เริ่มทำแบบทดสอบก่อนเรียน", icon="📝")
+            # st.session_state.page = "pretest"
             # st.rerun()
 
     with nav3:
+        if st.button("ทำข้อสอบ"):
+            st.session_state.ask_password = True
+
+    with nav4:
         if st.button("สมัครเรียน"):
             st.session_state.page = "register"
             st.rerun()
 
-    with nav4:
-        if st.button("ติดต่อ"):
-            # st.session_state.page = "contact"
-            st.session_state.page = "home"
-            st.rerun()
-
     with nav5:
-        if st.button("คอร์สเรียน"):
-            # st.session_state.page = "courses"
-            st.session_state.page = "home"
-            st.rerun()
+        if st.button("📞 ติดต่อ"):
+            st.toast("📱 ติดต่อ: 065-294-1928", icon="📞")
 
     with nav6:
-        if st.button("โปรโมชัน"):
-            # st.session_state.page = "promotion"
-            st.session_state.page = "home"
-            st.rerun()
+        if st.button("📚 คอร์สเรียน"):
+            st.toast("🎯 คอร์สเรียนคณิตศาสตร์ ระดับชั้น มัธยม", icon="📚")
 
     with nav7:
-        if st.button("ทดลองเรียนฟรี"):
-            # st.session_state.page = "free_trial"
-            st.session_state.page = "home"
-            st.rerun()
+        if st.button("🎉 โปรโมชัน"):
+            st.toast("🔥 สมัคร 2 คนขึ้นไป ลด 10%!", icon="🎉")
+
+    with nav8:
+        if st.button("🧪 ทดลองเรียน"):
+            st.toast("✨ ทดลองเรียนและทดสอบความรู้ฟรีก่อนตัดสินใจ", icon="✨")
 
     if st.session_state.ask_password:
         st.markdown('<div class="dimmed">', unsafe_allow_html=True)
