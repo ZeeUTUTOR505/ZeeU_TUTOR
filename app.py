@@ -327,13 +327,13 @@ elif st.session_state.page == "exam":
         st.success(f"✅ ส่งคำตอบสำเร็จ! ได้คะแนน {score} / {len_questions}")
 
         with st.spinner("📤 กำลังส่งผลสอบ... กรุณารอสักครู่"):
-            send_exam_result_email(
-                student_name=st.session_state.student_name,
-                level=st.session_state.level,
-                test_type=st.session_state.test_type,
-                score=score,
-                total=len_questions,
-                result_detail=result_detail)
+            send_exam_result_email(question_path=question_path,
+                                   student_name=st.session_state.student_name,
+                                   level=st.session_state.level,
+                                   test_type=st.session_state.test_type,
+                                   score=score,
+                                   total=len_questions,
+                                   result_detail=result_detail)
 
             save_submit_time(
                 st.session_state.student_name,

@@ -26,6 +26,9 @@ import re
 from reportlab.platypus import Image
 import matplotlib.font_manager as fm
 from reportlab.lib.colors import Color
+from reportlab.pdfgen import canvas
+from reportlab.lib.utils import ImageReader
+import textwrap
 
 
 def add_watermark(canvas, doc):
@@ -329,13 +332,131 @@ def generate_password():
     return password
 
 
-def send_exam_result_email(student_name, level, test_type, score, total, result_detail):
+def generate_question_pdf(question_path):
+
+    question_path = os.path.join(BASE_DIR, question_path)
+    with open(question_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    pdf_file = "qna.pdf"
+    c = canvas.Canvas(pdf_file, pagesize=A4)
+    width, height = A4
+
+    # Font
+    pdfmetrics.registerFont(TTFont(
+        'THSarabun',
+        f"{BASE_DIR}/fonts/THSarabunNew.ttf"
+    ))
+    c.setFont('THSarabun', 16)
+
+    # Layout
+    left_margin = 50
+    right_margin = 50
+    top_margin = 50
+    bottom_margin = 50
+
+    y = height - top_margin
+
+    def check_page_space(required_height):
+        nonlocal y
+        if y - required_height < bottom_margin:
+            c.showPage()
+            c.setFont('THSarabun', 16)
+            y = height - top_margin
+
+    def normalize_text(text):
+        return text.replace("π", "pi")
+
+    def draw_multiline_text(text):
+        nonlocal y
+        wrapped = textwrap.wrap(text, width=90)
+        for line in wrapped:
+            check_page_space(20)
+            c.drawString(left_margin, y, line)
+            y -= 20
+
+    def draw_solution_lines(num_lines=5):
+        nonlocal y
+        for _ in range(num_lines):
+            check_page_space(20)
+            c.line(left_margin, y, width - right_margin, y)
+            y -= 20
+
+    def estimate_text_height(text):
+        wrapped = textwrap.wrap(text, width=90)
+        return len(wrapped) * 20
+
+    for item in data:
+        no = item["no"]
+        question = normalize_text(item["question"])
+        answer = item["answer"]
+
+        # Estimate space
+        q_height = estimate_text_height(f"{no}. {question}")
+        a_height = estimate_text_height(f"คำตอบ: {answer}")
+        solution_height = 5 * 20 + 20
+
+        img_height = 0
+        if "image" in item and item["image"]:
+            try:
+                img = ImageReader("../" + item["image"])
+                img_w, img_h = img.getSize()
+
+                max_width = width - left_margin - right_margin
+                scale = min(max_width / img_w, 0.4)
+                img_height = img_h * scale + 10
+            except:
+                pass
+
+        total_needed = q_height + img_height + solution_height + a_height + 40
+
+        if y - total_needed < bottom_margin:
+            c.showPage()
+            c.setFont('THSarabun', 16)
+            y = height - top_margin
+
+        draw_multiline_text(f"{no}. {question}")
+        y -= 5
+
+        # Image
+        if "image" in item and item["image"]:
+            try:
+                img = ImageReader("../" + item["image"])
+                img_w, img_h = img.getSize()
+
+                max_width = width - left_margin - right_margin
+                scale = min(max_width / img_w, 0.4)
+                img_w *= scale
+                img_h *= scale
+
+                check_page_space(img_h + 10)
+                c.drawImage(img, left_margin, y - img_h,
+                            width=img_w, height=img_h)
+                y -= img_h + 10
+            except:
+                pass
+
+        # Solution
+        draw_multiline_text("วิธีทำ:")
+        draw_solution_lines(5)
+
+        # Answer
+        draw_multiline_text(f"คำตอบ: {answer}")
+        y -= 20
+
+    # Save
+    c.save()
+
+    return pdf_file
+
+
+def send_exam_result_email(question_path, student_name, level, test_type, score, total, result_detail):
 
     sender_email = st.secrets["EMAIL_USER"]
     sender_password = st.secrets["EMAIL_PASS"]
     receiver_email = st.secrets["EMAIL_USER"]
     date = datetime.now().strftime("%Y-%m-%d")
-    pdf_path = generate_exam_pdf(
+    result_pdf_path = generate_exam_pdf(
         student_name,
         level,
         test_type,
@@ -343,6 +464,7 @@ def send_exam_result_email(student_name, level, test_type, score, total, result_
         total,
         result_detail
     )
+    pdf_question_path = generate_question_pdf(question_path)
 
     subject = f"ผลสอบ {student_name} ระดับ {level.upper()} ({test_type}) - {date}"
 
@@ -364,19 +486,33 @@ def send_exam_result_email(student_name, level, test_type, score, total, result_
 
     msg.attach(MIMEText(body, "plain"))
 
-    #
-    with open(pdf_path, "rb") as f:
-        part = MIMEBase("application", "pdf")
-        part.set_payload(f.read())
+    # Attach result PDF
+    with open(result_pdf_path, "rb") as f:
+        part1 = MIMEBase("application", "pdf")
+        part1.set_payload(f.read())
 
-    encoders.encode_base64(part)
+    encoders.encode_base64(part1)
 
-    part.add_header(
+    part1.add_header(
         "Content-Disposition",
-        f'attachment; filename="{pdf_path}"'
+        f'attachment; filename="{os.path.basename(result_pdf_path)}"'
     )
 
-    msg.attach(part)
+    msg.attach(part1)
+
+    # Attach question PDF
+    with open(pdf_question_path, "rb") as f:
+        part2 = MIMEBase("application", "pdf")
+        part2.set_payload(f.read())
+
+    encoders.encode_base64(part2)
+
+    part2.add_header(
+        "Content-Disposition",
+        f'attachment; filename="{os.path.basename(pdf_question_path)}"'
+    )
+
+    msg.attach(part2)
 
     try:
         server = smtplib.SMTP("smtp.gmail.com", 587)
@@ -393,8 +529,9 @@ def send_exam_result_email(student_name, level, test_type, score, total, result_
         return False
 
     finally:
-        if os.path.exists(pdf_path):
-            os.remove(pdf_path)
+        for path in [result_pdf_path, pdf_question_path]:
+            if os.path.exists(path):
+                os.remove(path)
         if os.path.exists(chart_path):
             os.remove(chart_path)
 

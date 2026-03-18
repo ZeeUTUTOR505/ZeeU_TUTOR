@@ -1,4 +1,5 @@
 streamlit
 streamlit-autorefresh
 reportlab
+PyPDF2
 matplotlib
