@@ -338,7 +338,7 @@ def generate_question_pdf(question_path):
     with open(question_path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    pdf_file = "qna.pdf"
+    pdf_file = "Questions_Answer.pdf"
     c = canvas.Canvas(pdf_file, pagesize=A4)
     width, height = A4
 
@@ -399,7 +399,7 @@ def generate_question_pdf(question_path):
         img_height = 0
         if "image" in item and item["image"]:
             try:
-                img = ImageReader("../" + item["image"])
+                img = ImageReader(f"{BASE_DIR}/{item['image']}")
                 img_w, img_h = img.getSize()
 
                 max_width = width - left_margin - right_margin
