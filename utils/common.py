@@ -421,7 +421,7 @@ def generate_question_pdf(question_path):
         # Image
         if "image" in item and item["image"]:
             try:
-                img = ImageReader("../" + item["image"])
+                img = ImageReader(f"{BASE_DIR}/{item['image']}")
                 img_w, img_h = img.getSize()
 
                 max_width = width - left_margin - right_margin
