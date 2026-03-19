@@ -59,8 +59,6 @@ if st.session_state.page == "home":
             st.session_state.password_type = "prelearn"
             st.toast("🧠 เริ่มทำแบบทดสอบก่อนเรียน", icon="📝")
             st.session_state.ask_password = True
-            # st.session_state.page = "prelearn"
-            # st.rerun()
 
     with nav3:
         if st.button("ทำข้อสอบ"):
