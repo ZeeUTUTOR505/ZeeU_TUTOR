@@ -320,7 +320,7 @@ def generate_exam_pdf(student_name, level, test_type, score, total, result_detai
     return file_path
 
 
-def generate_password():
+def generate_password_exam():
     today = datetime.now(ZoneInfo("Asia/Bangkok"))
 
     yy = today.year % 100
@@ -329,6 +329,17 @@ def generate_password():
 
     total = (yy + mm + dd)
     password = str(total).zfill(4)[::-1] + str(dd).zfill(2)
+    return password
+
+
+def generate_password_pretest():
+    today = datetime.now(ZoneInfo("Asia/Bangkok"))
+
+    yy = today.year % 100
+    mm = today.month
+    dd = today.day
+
+    password = f"{str(dd).zfill(2)}{str(mm).zfill(2)}{str(yy).zfill(2)}"
     return password
 
 

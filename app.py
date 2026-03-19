@@ -1,9 +1,10 @@
 import os
+import random
 from PIL import Image
 import streamlit as st
 from utils.image_utils import get_base64
 from utils.question_loader import load_questions
-from utils.common import generate_password, send_email, is_valid_phone, send_exam_result_email, can_submit, save_submit_time, clean_student_name
+from utils.common import generate_password_exam, generate_password_pretest, send_email, is_valid_phone, send_exam_result_email, can_submit, save_submit_time, clean_student_name
 from styles.main_style import apply_style
 from pages.home import render_home, render_teachers
 import os
@@ -55,12 +56,15 @@ if st.session_state.page == "home":
 
     with nav2:
         if st.button("ทดสอบก่อนสมัคร"):
+            st.session_state.password_type = "prelearn"
             st.toast("🧠 เริ่มทำแบบทดสอบก่อนเรียน", icon="📝")
-            # st.session_state.page = "pretest"
+            st.session_state.ask_password = True
+            # st.session_state.page = "prelearn"
             # st.rerun()
 
     with nav3:
         if st.button("ทำข้อสอบ"):
+            st.session_state.password_type = "exam"
             st.session_state.ask_password = True
 
     with nav4:
@@ -106,7 +110,11 @@ if st.session_state.page == "home":
 
         with col1:
             if st.button("ยืนยัน", use_container_width=True):
-                if user_input == generate_password():
+                if st.session_state.password_type == "prelearn":
+                    expected_password = generate_password_pretest()
+                else:
+                    expected_password = generate_password_exam()
+                if user_input == expected_password:
                     st.session_state.ask_password = False
                     st.session_state.page = "select_exam"
                     st.rerun()
@@ -176,11 +184,13 @@ elif st.session_state.page == "select_exam":
             st.session_state.page = "start_exam"
     with col2:
         if st.button("📘 ทำข้อสอบ ม.2"):
-            st.warning("🚧 ระดับ ม.2 กำลังพัฒนา")
+            st.session_state.level = "m2"
+            st.session_state.page = "start_exam"
 
     with col3:
         if st.button("📗 ทำข้อสอบ ม.3"):
-            st.warning("🚧 ระดับ ม.3 กำลังพัฒนา")
+            st.session_state.level = "m3"
+            st.session_state.page = "start_exam"
     # ===== ROW 2 =====
     col4, col5, col6 = st.columns(3)
 
@@ -191,11 +201,13 @@ elif st.session_state.page == "select_exam":
 
     with col5:
         if st.button("📙 ทำข้อสอบ ม.5"):
-            st.warning("🚧 ระดับ ม.5 กำลังพัฒนา")
+            st.session_state.level = "m5"
+            st.session_state.page = "start_exam"
 
     with col6:
         if st.button("🎓 ทำข้อสอบ ม.6"):
-            st.warning("🚧 ระดับ ม.6 กำลังพัฒนา")
+            st.session_state.level = "m6"
+            st.session_state.page = "start_exam"
 
     # ===== ปุ่มกลับ =====
     if st.button("⬅ กลับหน้าแรก"):
@@ -218,12 +230,15 @@ elif st.session_state.page == "start_exam":
         ["Pre-test", "Post-test"],
         horizontal=True
     )
-
     exam_set = st.radio(
         "เลือกชุดข้อสอบ",
-        [1, 2, 3],
+        [1, 2, 3, 4, 5],
         horizontal=True
     )
+
+    if st.session_state.password_type == "prelearn":
+        test_type = "prelearn"
+        exam_set = 1
 
     if st.button("เริ่มทำข้อสอบ"):
         if not student_name:
@@ -235,18 +250,33 @@ elif st.session_state.page == "start_exam":
             st.session_state.page = "exam"
             st.rerun()
 
+    if st.button("⬅ กลับหน้าเลือกข้อสอบ"):
+        st.session_state.page = "select_exam"
+
+
 # ================== EXAM PAGE ==================
 elif st.session_state.page == "exam":
 
     st.title(f"ข้อสอบระดับ {st.session_state.level.upper()}")
     st.write(f"👤 ผู้สอบ: {st.session_state.student_name}")
 
+    # DEV ...........
+    if st.session_state.level.upper() not in ["M1", "M4"] and st.session_state.password_type != "prelearn":
+        st.warning("⛔ ข้อสอบนี้ยังไม่เปิดให้ใช้งาน")
+
+        if st.button("⬅ กลับหน้าเลือกข้อสอบ"):
+            st.session_state.page = "select_exam"
+
+        st.stop()
+
+    # DEV ...........
+
     if st.session_state.test_type == "Pre-test":
         question_path = f"questions/{st.session_state.level}_pretest_{st.session_state.exam_set}.json"
-    else:
+    elif st.session_state.test_type == "Post-test":
         question_path = f"questions/{st.session_state.level}_posttest_{st.session_state.exam_set}.json"
-
-    import random
+    elif st.session_state.test_type == "prelearn":
+        question_path = f"questions/{st.session_state.level}_prelearn_{st.session_state.exam_set}.json"
 
     questions = load_questions(question_path)
     seed = hash(st.session_state.student_name)
