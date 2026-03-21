@@ -401,9 +401,11 @@ def generate_question_pdf(question_path):
         no = item["no"]
         question = normalize_text(item["question"])
         answer = item["answer"]
+        choices = item["choices"]
 
         # Estimate space
         q_height = estimate_text_height(f"{no}. {question}")
+        c_height = estimate_text_height(f"ตัวเลือก: {choices}")
         a_height = estimate_text_height(f"คำตอบ: {answer}")
         solution_height = 5 * 20 + 20
 
@@ -419,7 +421,8 @@ def generate_question_pdf(question_path):
             except:
                 pass
 
-        total_needed = q_height + img_height + solution_height + a_height + 40
+        total_needed = q_height + img_height + \
+            solution_height + c_height + a_height + 40
 
         if y - total_needed < bottom_margin:
             c.showPage()
@@ -427,6 +430,7 @@ def generate_question_pdf(question_path):
             y = height - top_margin
 
         draw_multiline_text(f"{no}. {question}")
+
         y -= 5
 
         # Image
@@ -448,6 +452,7 @@ def generate_question_pdf(question_path):
                 pass
 
         # Solution
+        draw_multiline_text(f"ตัวเลือก: {choices}")
         draw_multiline_text("วิธีทำ:")
         draw_solution_lines(5)
 
