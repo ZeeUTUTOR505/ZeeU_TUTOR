@@ -80,7 +80,7 @@ if st.session_state.page == "home":
 
     with nav7:
         if st.button("🎉 โปรโมชัน"):
-            st.toast("🔥 สมัคร 2 คนขึ้นไป ลด 10%!", icon="🎉")
+            st.toast("🔥 สมัคร 20 คนขึ้นไป ลด 10%!", icon="🎉")
 
     with nav8:
         if st.button("🧪 ทดลองเรียน"):

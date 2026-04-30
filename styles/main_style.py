@@ -1,67 +1,67 @@
 def apply_style(bg1, bg2, bg3, bg4):
     return f"""
-    <style>
-
-/* ===== Fade content when popup active ===== */
-.dimmed {{
-    opacity: 0.25;
-    pointer-events: none;
-    transition: 0.3s ease;
-}}
-
-/* ===== Center wrapper ===== */
-.password-wrapper {{
-    display: flex;
-    justify-content: center;
-    margin-top: 8vh;
-    transition: 0.3s ease;
-}}
-
-/* ===== Modal Box ===== */
-.password-box {{
-    background: white;
-    padding: 40px;
-    width: 420px;
-    border-radius: 24px;
-    box-shadow: 0 30px 80px rgba(0,0,0,0.25);
-    animation: popUp 0.25s ease-out;
-}}
-
-/* ===== Title ===== */
-.password-title {{
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    text-align: center;
-}}
-
-/* ===== Buttons ===== */
-.stButton > button {{
-    border-radius: 14px;
-    font-weight: 500;
-    padding: 10px;
-    transition: 0.2s;
-}}
-
-.stButton > button:hover {{
-    transform: translateY(-2px);
-}}
-
-/* ===== Animation ===== */
-@keyframes popUp {{
-    from {{opacity:0; transform: scale(0.95);}}
-    to {{opacity:1; transform: scale(1);}}
-}}
-
-/* ===== Mobile Responsive ===== */
-@media (max-width: 768px) {{
-    .password-box {{
-        width: 92%;
-        padding: 28px;
-        border-radius: 18px;
+    html, body, [data-testid="stAppViewContainer"] {{
+        background: #f8fafc !important;
     }}
-}}
 
+    /* ===== ROOT FIX (CRITICAL) ===== */
+    [data-testid="stAppViewContainer"] {{
+        background: #f8fafc;
+    }}
+
+    /* ===== Fade content when popup active ===== */
+    .dimmed {{
+        opacity: 0.25;
+        pointer-events: none;
+        transition: 0.3s ease;
+    }}
+
+    /* ===== Center wrapper ===== */
+    .password-wrapper {{
+        display: flex;
+        justify-content: center;
+        margin-top: 8vh;
+    }}
+
+    /* ===== Modal Box ===== */
+    .password-box {{
+        background: white;
+        padding: 40px;
+        width: 420px;
+        border-radius: 24px;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+        animation: popUp 0.25s ease-out;
+    }}
+
+    /* ===== Title ===== */
+    .password-title {{
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        text-align: center;
+    }}
+
+    /* ===== BUTTON (KEEP ONLY ONE VERSION) ===== */
+    .stButton > button {{
+        border-radius: 14px;
+        height: 52px;
+        font-weight: 600;
+        background: white;
+        color: #1e3a8a;
+        border: none;
+        transition: 0.3s ease;
+    }}
+
+    .stButton > button:hover {{
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }}
+
+    /* ===== Animation ===== */
+    @keyframes popUp {{
+        from {{opacity:0; transform: scale(0.95);}}
+        to {{opacity:1; transform: scale(1);}}
+    }}
 
     /* ===== ANNOUNCEMENT BAR ===== */
     .announce {{
@@ -70,22 +70,6 @@ def apply_style(bg1, bg2, bg3, bg4):
         text-align: center;
         padding: 8px;
         font-size: 14px;
-    }}
-
-    /* ===== NAVBAR ===== */
-    .navbar {{
-        background: white;
-        padding: 18px 60px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-    }}
-
-    .nav-logo {{
-        font-size: 24px;
-        font-weight: 800;
-        color: #1e3a8a;
     }}
 
     /* ===== HERO ===== */
@@ -139,33 +123,6 @@ def apply_style(bg1, bg2, bg3, bg4):
         margin-top: 20px;
     }}
 
-    /* ===== BUTTON ===== */
-    .stButton>button {{
-        border-radius: 14px;
-        height: 52px;
-        font-weight: 600;
-        background: white;
-        color: #1e3a8a;
-        border: none;
-        transition: 0.3s ease;
-    }}
-
-    .stButton>button:hover {{
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    }}
-
-    /* ===== CONTACT CARD ===== */
-    .contact-box {{
-        margin-top: 60px;
-        padding: 30px;
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-        font-size: 18px;
-        text-align: center;
-    }}
-
     /* ===== EXAM CARD ===== */
     .exam-box {{
         background: white;
@@ -175,40 +132,15 @@ def apply_style(bg1, bg2, bg3, bg4):
         margin-bottom: 20px;
     }}
 
-    /* Social item */
-    .contact-item {{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        padding: 4px 10px;
-        border-radius: 4px;
-        text-decoration: none;
-        font-weight: 300;
-        color: #1e3a8a;
-        transition: 0.3s ease;
-    }}
-
-    /* Logo size */
-    .contact-item img {{
-        width: 34px;
-    }}
-
-    /* Hover effect */
-    .contact-item:hover {{
-        background: #f3f6ff;
-        transform: translateY(-2px);
-    }}
-    
-    /* ===== FOOTER ===== */
-    .footer {{
+    /* ===== FOOTER (FIXED + STABLE) ===== */
+    [data-testid="stAppViewContainer"] .footer {{
         position: fixed;
         bottom: 0;
         left: 0;
         width: 100%;
         background: rgba(30, 64, 175, 0.95);
         backdrop-filter: blur(8px);
-        padding: 22px 0;  
+        padding: 22px 0;
         z-index: 999;
     }}
 
@@ -224,7 +156,7 @@ def apply_style(bg1, bg2, bg3, bg4):
 
     .footer-title {{
         font-weight: 700;
-        font-size: 24px;  
+        font-size: 24px;
         color: white;
     }}
 
@@ -253,47 +185,43 @@ def apply_style(bg1, bg2, bg3, bg4):
         transform: translateY(-3px);
     }}
 
+    /* ===== PREVENT CONTENT HIDDEN ===== */
+    [data-testid="stAppViewContainer"] .block-container {{
+        padding-bottom: 100px;
+    }}
+
     /* ===== MOBILE ===== */
     @media (max-width: 768px) {{
 
         .footer {{
-            padding: 1px 0;   
+            padding: 6px 0;
         }}
 
         .footer-content {{
             flex-direction: column;
-            gap: 1px;
-            padding: 0 1px;
+            gap: 6px;
+            padding: 0 10px;
             text-align: center;
         }}
 
         .footer-title {{
-            font-size: 10px;  
-            font-weight: 500;
+            font-size: 12px;
         }}
 
         .footer-links {{
             flex-direction: column;
-            gap: 3px;
+            gap: 6px;
         }}
 
         .footer-item {{
-            justify-content: center;
-            font-size: 7px;   
-            gap: 3px;
-            font-weight: 300;
+            font-size: 10px;
+            gap: 6px;
         }}
 
         .footer-item img {{
-            width: 10px;  
+            width: 14px;
         }}
     }}
 
-    /* Prevent content from hiding */
-    .main .block-container {{
-        padding-bottom: 50px;
-    }}
-
-    </style>
+   
     """
-

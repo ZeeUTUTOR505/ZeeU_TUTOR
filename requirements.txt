@@ -3,3 +3,4 @@ streamlit-autorefresh
 reportlab
 PyPDF2
 matplotlib
+pillow

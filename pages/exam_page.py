@@ -1,0 +1,92 @@
+import streamlit as st
+from services.exam_service import ExamService
+from services.email_service import EmailService
+from utils.common import can_submit, save_submit_time, clean_student_name
+
+
+class ExamPage:
+
+    def __init__(self, state):
+        self.state = state
+
+    def render(self):
+
+        if st.session_state.page == "start_exam":
+            self.render_start()
+        else:
+            self.render_exam()
+
+    def render_start(self):
+
+        name = st.text_input("ชื่อ")
+        name = clean_student_name(name)
+
+        test_type = st.radio(
+            "ประเภท",
+            ["Pre-test", "Post-test"],
+            horizontal=True
+        )
+
+        exam_set = st.radio(
+            "ชุดข้อสอบ",
+            [1, 2, 3, 4, 5],
+            horizontal=True
+        )
+
+        if st.session_state.password_type == "prelearn":
+            test_type = "prelearn"
+            exam_set = 1
+
+        if st.button("เริ่ม"):
+            if not name:
+                st.warning("กรอกชื่อ")
+            else:
+                st.session_state.student_name = name
+                st.session_state.test_type = test_type
+                st.session_state.exam_set = exam_set
+                self.state.go("exam")
+
+    def render_exam(self):
+
+        level = st.session_state.level
+        name = st.session_state.student_name
+
+        st.title(f"ข้อสอบ {level.upper()}")
+        st.write(f"👤 {name}")
+
+        questions, path = ExamService.load(
+            level,
+            st.session_state.test_type,
+            st.session_state.exam_set,
+            name
+        )
+
+        user_answers = []
+
+        for i, q in enumerate(questions, 1):
+            st.subheader(f"ข้อ {i}")
+            st.write(q["question"])
+
+            ans = st.text_input("คำตอบ", key=f"q_{i}")
+            user_answers.append((q, ans))
+
+        if st.button("ส่ง"):
+            if not can_submit(name, level, st.session_state.test_type):
+                st.error("ส่งซ้ำไม่ได้")
+                return
+
+            score, detail = ExamService.score(user_answers)
+
+            st.success(f"ได้ {score}/{len(questions)}")
+
+            EmailService.send_exam(
+                question_path=path,
+                student_name=name,
+                level=level,
+                test_type=st.session_state.test_type,
+                score=score,
+                total=len(questions),
+                result_detail=detail
+            )
+
+            save_submit_time(name, level, st.session_state.test_type)
