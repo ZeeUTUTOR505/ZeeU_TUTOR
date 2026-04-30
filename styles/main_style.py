@@ -1,10 +1,8 @@
 def apply_style(bg1, bg2, bg3, bg4):
     return f"""
-    html, body, [data-testid="stAppViewContainer"] {{
-        background: #f8fafc !important;
-    }}
 
-    /* ===== ROOT FIX (CRITICAL) ===== */
+
+    /* =====  ===== */
     [data-testid="stAppViewContainer"] {{
         background: #f8fafc;
     }}
@@ -41,7 +39,7 @@ def apply_style(bg1, bg2, bg3, bg4):
         text-align: center;
     }}
 
-    /* ===== BUTTON (KEEP ONLY ONE VERSION) ===== */
+    /* ===== BUTTON ===== */
     .stButton > button {{
         border-radius: 14px;
         height: 52px;
