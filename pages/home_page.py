@@ -28,7 +28,7 @@ class HomePage:
 
         st.markdown(
             f"""
-            <style id="global-style">
+            <style>
             {css}
             </style>
             """,
