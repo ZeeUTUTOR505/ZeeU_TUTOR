@@ -26,14 +26,11 @@ class HomePage:
     def load_style(bg1, bg2, bg3, bg4):
         css = apply_style(bg1, bg2, bg3, bg4)
 
-        st.markdown(
-            f"""
-            <style>
-            {css}
-            </style>
-            """,
-            unsafe_allow_html=True
-        )
+        st.html(f"""
+        <style>
+        {css}
+        </style>
+        """)
 
     def render(self):
         HomePage.load_style(self.bg1, self.bg2, self.bg3, self.bg4)
