@@ -1,4 +1,5 @@
 
+from dotenv import load_dotenv
 import random
 from zoneinfo import ZoneInfo
 import matplotlib.pyplot as plt
@@ -466,11 +467,18 @@ def generate_question_pdf(question_path):
     return pdf_file
 
 
+def get_secret(key, default=None):
+    if key in st.secrets:
+        return st.secrets[key]
+    return os.getenv(key, default)
+
+
 def send_exam_result_email(question_path, student_name, level, test_type, score, total, result_detail):
 
-    sender_email = st.secrets["EMAIL_USER"]
-    sender_password = st.secrets["EMAIL_PASS"]
-    receiver_email = st.secrets["EMAIL_USER"]
+    sender_email = get_secret("EMAIL_USER")
+    sender_password = get_secret("EMAIL_PASS")
+    receiver_emails = get_secret("EMAIL_RECEIVER")
+
     date = datetime.now().strftime("%Y-%m-%d")
     result_pdf_path = generate_exam_pdf(
         student_name,
@@ -497,7 +505,8 @@ def send_exam_result_email(question_path, student_name, level, test_type, score,
 
     msg = MIMEMultipart()
     msg["From"] = sender_email
-    msg["To"] = receiver_email
+    msg["To"] = ", ".join(receiver_emails) if isinstance(
+        receiver_emails, list) else receiver_emails
     msg["Subject"] = subject
 
     msg.attach(MIMEText(body, "plain"))
@@ -552,12 +561,18 @@ def send_exam_result_email(question_path, student_name, level, test_type, score,
             os.remove(chart_path)
 
 
+current_dir = os.path.dirname(__file__)
+project_root = os.path.abspath(os.path.join(current_dir, ".."))
+env_path = os.path.join(project_root, "secrect", ".env")
+load_dotenv(env_path)
+
+
 def send_email(name, grade, phone):
     try:
         # --------- Load Secrets ----------
-        sender_email = st.secrets["EMAIL_USER"]
-        sender_password = st.secrets["EMAIL_PASS"]
-        receiver_emails = st.secrets["EMAIL_RECEIVER"]
+        sender_email = get_secret("EMAIL_USER")
+        sender_password = get_secret("EMAIL_PASS")
+        receiver_emails = get_secret("EMAIL_RECEIVER")
 
         if isinstance(receiver_emails, str):
             receiver_emails = [receiver_emails]

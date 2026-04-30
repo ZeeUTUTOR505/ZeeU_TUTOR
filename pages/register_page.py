@@ -22,7 +22,7 @@ class RegisterPage:
             elif not grade:
                 st.warning("กรอกระดับ")
             elif not is_valid_phone(phone):
-                st.warning("เบอร์ไม่ถูก")
+                st.warning("เบอร์ไม่ถูกต้อง")
             else:
                 success = EmailService.send_register(name, grade, phone)
 

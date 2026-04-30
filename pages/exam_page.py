@@ -2,6 +2,11 @@ import streamlit as st
 from services.exam_service import ExamService
 from services.email_service import EmailService
 from utils.common import can_submit, save_submit_time, clean_student_name
+import os
+import random
+
+# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class ExamPage:
@@ -50,6 +55,8 @@ class ExamPage:
 
         level = st.session_state.level
         name = st.session_state.student_name
+        seed = hash(name)
+        rnd = random.Random(seed)
 
         st.title(f"ข้อสอบ {level.upper()}")
         st.write(f"👤 {name}")
@@ -67,26 +74,61 @@ class ExamPage:
             st.subheader(f"ข้อ {i}")
             st.write(q["question"])
 
-            ans = st.text_input("คำตอบ", key=f"q_{i}")
+            if q.get("image"):
+
+                print(f"Debug: Found image for question {i}: {q['image']}")
+                print(f"Debug: Checking image path: {os.path.join(BASE_DIR)}")
+                print(os.getcwd())
+                image_path = os.path.join(BASE_DIR, q["image"])
+                if os.path.exists(image_path):
+                    st.image(image_path, width=300)
+
+            if q["choices"]:
+                choices = q["choices"].copy()
+                rnd.shuffle(choices)
+
+                ans = st.radio(
+                    "เลือกคำตอบ",
+                    choices,
+                    key=f"q_{i}",
+                    index=None
+                )
+
+            elif q["choices"] is None:
+                ans = st.text_input(
+                    "คำตอบ",
+                    key=f"q_{i}"
+                )
+
+            else:
+                ans = ""
+
             user_answers.append((q, ans))
 
         if st.button("ส่ง"):
             if not can_submit(name, level, st.session_state.test_type):
-                st.error("ส่งซ้ำไม่ได้")
+                st.error("⛔ คุณส่งผลสอบไปแล้ว กรุณารอ 1 ชั่วโมงก่อนส่งใหม่")
                 return
 
             score, detail = ExamService.score(user_answers)
 
-            st.success(f"ได้ {score}/{len(questions)}")
+            st.success(f"คะแนนที่ได้ {score}/{len(questions)}")
 
-            EmailService.send_exam(
-                question_path=path,
-                student_name=name,
-                level=level,
-                test_type=st.session_state.test_type,
-                score=score,
-                total=len(questions),
-                result_detail=detail
-            )
+            with st.spinner("📤 กำลังส่งผลสอบ... กรุณารอสักครู่"):
 
-            save_submit_time(name, level, st.session_state.test_type)
+                EmailService.send_exam(
+                    question_path=path,
+                    student_name=name,
+                    level=level,
+                    test_type=st.session_state.test_type,
+                    score=score,
+                    total=len(questions),
+                    result_detail=detail
+                )
+
+                save_submit_time(name, level, st.session_state.test_type)
+
+            st.success(f"✅ ผลสอบถูกส่งเข้าระบบแล้ว!")
+
+        if st.button("⬅ กลับหน้าเลือกข้อสอบ"):
+            st.session_state.page = "select_exam"
