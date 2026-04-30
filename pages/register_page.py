@@ -1,6 +1,6 @@
 import streamlit as st
 from services.email_service import EmailService
-from utils.common import is_valid_phone
+from utils.common import Validator
 
 
 class RegisterPage:
@@ -21,7 +21,7 @@ class RegisterPage:
                 st.warning("กรอกชื่อ")
             elif not grade:
                 st.warning("กรอกระดับ")
-            elif not is_valid_phone(phone):
+            elif not Validator.is_valid_phone(phone):
                 st.warning("เบอร์ไม่ถูกต้อง")
             else:
                 success = EmailService.send_register(name, grade, phone)

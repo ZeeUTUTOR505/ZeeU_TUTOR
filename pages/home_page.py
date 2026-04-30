@@ -3,7 +3,6 @@ import streamlit as st
 from components.password_modal import render_password_modal
 from pages.home import render_home, render_teachers
 from utils.image_utils import get_base64
-from PIL import Image
 from styles.main_style import apply_style
 import os
 

@@ -1,11 +1,10 @@
 import streamlit as st
 from services.exam_service import ExamService
 from services.email_service import EmailService
-from utils.common import can_submit, save_submit_time, clean_student_name
+from utils.common import LogSubmission, clean_student_name
 import os
 import random
 
-# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -106,7 +105,7 @@ class ExamPage:
             user_answers.append((q, ans))
 
         if st.button("ส่ง"):
-            if not can_submit(name, level, st.session_state.test_type):
+            if not LogSubmission.can_submit(name, level, st.session_state.test_type):
                 st.error("⛔ คุณส่งผลสอบไปแล้ว กรุณารอ 1 ชั่วโมงก่อนส่งใหม่")
                 return
 
@@ -126,7 +125,8 @@ class ExamPage:
                     result_detail=detail
                 )
 
-                save_submit_time(name, level, st.session_state.test_type)
+                LogSubmission.save_submit_time(
+                    name, level, st.session_state.test_type)
 
             st.success(f"✅ ผลสอบถูกส่งเข้าระบบแล้ว!")
 

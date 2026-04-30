@@ -321,29 +321,6 @@ def generate_exam_pdf(student_name, level, test_type, score, total, result_detai
     return file_path
 
 
-def generate_password_exam():
-    today = datetime.now(ZoneInfo("Asia/Bangkok"))
-
-    yy = today.year % 100
-    mm = today.month
-    dd = today.day
-
-    total = (yy + mm + dd)
-    password = str(total).zfill(4)[::-1] + str(dd).zfill(2)
-    return password
-
-
-def generate_password_pretest():
-    today = datetime.now(ZoneInfo("Asia/Bangkok"))
-
-    yy = today.year % 100
-    mm = today.month
-    dd = today.day
-
-    password = f"{str(dd).zfill(2)}{str(mm).zfill(2)}{str(yy).zfill(2)}"
-    return password
-
-
 def generate_question_pdf(question_path):
 
     question_path = os.path.join(BASE_DIR, question_path)
@@ -626,11 +603,12 @@ def send_email(name, grade, phone):
         return False
 
 
-def is_valid_phone(phone):
-    digits_only = "".join(c for c in phone if c.isdigit())
-    if len(digits_only) in [9, 10]:
-        return True
-    return False
+class Validator:
+
+    @staticmethod
+    def is_valid_phone(phone):
+        digits_only = "".join(c for c in phone if c.isdigit())
+        return len(digits_only) in [9, 10]
 
 
 def clean_student_name(name: str) -> str:
@@ -644,37 +622,64 @@ def clean_student_name(name: str) -> str:
     return name
 
 
-def can_submit(student_name, level, test_type):
+class LogSubmission:
+    @staticmethod
+    def can_submit(student_name, level, test_type):
+        key = f"{student_name}_{level}_{test_type}"
 
-    key = f"{student_name}_{level}_{test_type}"
+        if not os.path.exists(SUBMIT_LOG_FILE):
+            return True
 
-    if not os.path.exists(SUBMIT_LOG_FILE):
-        return True
-
-    with open(SUBMIT_LOG_FILE, "r") as f:
-        data = json.load(f)
-
-    if key not in data:
-        return True
-
-    last_submit_time = datetime.fromisoformat(data[key])
-    if datetime.now() - last_submit_time < timedelta(hours=1):
-        return False
-
-    return True
-
-
-def save_submit_time(student_name, level, test_type):
-
-    key = f"{student_name}_{level}_{test_type}"
-
-    if os.path.exists(SUBMIT_LOG_FILE):
         with open(SUBMIT_LOG_FILE, "r") as f:
             data = json.load(f)
-    else:
-        data = {}
 
-    data[key] = datetime.now().isoformat()
+        if key not in data:
+            return True
 
-    with open(SUBMIT_LOG_FILE, "w") as f:
-        json.dump(data, f)
+        last_submit_time = datetime.fromisoformat(data[key])
+        if datetime.now() - last_submit_time < timedelta(hours=1):
+            return False
+
+        return True
+
+    @staticmethod
+    def save_submit_time(student_name, level, test_type):
+
+        key = f"{student_name}_{level}_{test_type}"
+
+        if os.path.exists(SUBMIT_LOG_FILE):
+            with open(SUBMIT_LOG_FILE, "r") as f:
+                data = json.load(f)
+        else:
+            data = {}
+
+        data[key] = datetime.now().isoformat()
+
+        with open(SUBMIT_LOG_FILE, "w") as f:
+            json.dump(data, f)
+
+
+class PasswordGenerator:
+
+    @staticmethod
+    def generate_exam_password():
+        today = datetime.now(ZoneInfo("Asia/Bangkok"))
+
+        yy = today.year % 100
+        mm = today.month
+        dd = today.day
+
+        total = (yy + mm + dd)
+        password = str(total).zfill(4)[::-1] + str(dd).zfill(2)
+        return password
+
+    @staticmethod
+    def generate_pretest_password():
+        today = datetime.now(ZoneInfo("Asia/Bangkok"))
+
+        yy = today.year % 100
+        mm = today.month
+        dd = today.day
+
+        password = f"{str(dd).zfill(2)}{str(mm).zfill(2)}{str(yy).zfill(2)}"
+        return password
