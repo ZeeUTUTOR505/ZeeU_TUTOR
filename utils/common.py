@@ -1,4 +1,5 @@
 
+from datetime import datetime
 from dotenv import load_dotenv
 import random
 from zoneinfo import ZoneInfo
@@ -32,6 +33,61 @@ from reportlab.lib.utils import ImageReader
 import textwrap
 
 
+current_dir = os.path.dirname(__file__)
+project_root = os.path.abspath(os.path.join(current_dir, ".."))
+env_path = os.path.join(project_root, "secrect", ".env")
+load_dotenv(env_path)
+
+
+class RandomSuggestion:
+
+    @staticmethod
+    def generate_suggestion(topic_stats):
+
+        good_suggestions = [
+            "ทำได้ดี ควรรักษาระดับและลองทำโจทย์ที่ยากขึ้น",
+            "มีความเข้าใจดี ลองฝึกโจทย์ประยุกต์เพิ่มเติม",
+            "พื้นฐานแข็งแรง ควรลองโจทย์ที่ท้าทายขึ้น",
+            "ทำได้ดีมาก ควรฝึกโจทย์หลากหลายรูปแบบ",
+            "มีความเข้าใจดี ลองทำข้อสอบแข่งขันหรือโจทย์ยากขึ้น"
+        ]
+
+        mid_suggestions = [
+            "ควรฝึกทำโจทย์เพิ่มเติมเพื่อเพิ่มความแม่นยำ",
+            "ควรทบทวนแนวคิดหลักและฝึกโจทย์ประยุกต์",
+            "ยังสามารถพัฒนาได้ ลองฝึกโจทย์หลากหลายรูปแบบ",
+            "ควรฝึกทำแบบฝึกหัดเพิ่มเติมเพื่อให้เข้าใจมากขึ้น",
+            "ลองทบทวนบทเรียนและทำโจทย์เพิ่มเพื่อเพิ่มความมั่นใจ"
+        ]
+
+        low_suggestions = [
+            "ควรทบทวนพื้นฐานของหัวข้อนี้ก่อน",
+            "ควรกลับไปฝึกโจทย์พื้นฐานเพิ่มเติม",
+            "แนะนำให้ทบทวนแนวคิดหลักของบทเรียน",
+            "ควรเริ่มจากแบบฝึกหัดระดับง่ายก่อน",
+            "ควรฝึกทำโจทย์พื้นฐานเพื่อสร้างความเข้าใจ"
+        ]
+
+        suggestions = []
+
+        for topic, data in topic_stats.items():
+
+            p = data["percent"]
+
+            if p >= 80:
+                suggestion = random.choice(good_suggestions)
+
+            elif p >= 50:
+                suggestion = random.choice(mid_suggestions)
+
+            else:
+                suggestion = random.choice(low_suggestions)
+
+            suggestions.append(f"หัวข้อ {topic} {suggestion}")
+
+        return suggestions
+
+
 def add_watermark(canvas, doc):
     canvas.saveState()
     width, height = A4
@@ -60,52 +116,6 @@ def add_watermark(canvas, doc):
 chart_path = "topic_chart.png"
 SUBMIT_LOG_FILE = "submit_log.json"
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
-def generate_suggestion(topic_stats):
-
-    good_suggestions = [
-        "ทำได้ดี ควรรักษาระดับและลองทำโจทย์ที่ยากขึ้น",
-        "มีความเข้าใจดี ลองฝึกโจทย์ประยุกต์เพิ่มเติม",
-        "พื้นฐานแข็งแรง ควรลองโจทย์ที่ท้าทายขึ้น",
-        "ทำได้ดีมาก ควรฝึกโจทย์หลากหลายรูปแบบ",
-        "มีความเข้าใจดี ลองทำข้อสอบแข่งขันหรือโจทย์ยากขึ้น"
-    ]
-
-    mid_suggestions = [
-        "ควรฝึกทำโจทย์เพิ่มเติมเพื่อเพิ่มความแม่นยำ",
-        "ควรทบทวนแนวคิดหลักและฝึกโจทย์ประยุกต์",
-        "ยังสามารถพัฒนาได้ ลองฝึกโจทย์หลากหลายรูปแบบ",
-        "ควรฝึกทำแบบฝึกหัดเพิ่มเติมเพื่อให้เข้าใจมากขึ้น",
-        "ลองทบทวนบทเรียนและทำโจทย์เพิ่มเพื่อเพิ่มความมั่นใจ"
-    ]
-
-    low_suggestions = [
-        "ควรทบทวนพื้นฐานของหัวข้อนี้ก่อน",
-        "ควรกลับไปฝึกโจทย์พื้นฐานเพิ่มเติม",
-        "แนะนำให้ทบทวนแนวคิดหลักของบทเรียน",
-        "ควรเริ่มจากแบบฝึกหัดระดับง่ายก่อน",
-        "ควรฝึกทำโจทย์พื้นฐานเพื่อสร้างความเข้าใจ"
-    ]
-
-    suggestions = []
-
-    for topic, data in topic_stats.items():
-
-        p = data["percent"]
-
-        if p >= 80:
-            suggestion = random.choice(good_suggestions)
-
-        elif p >= 50:
-            suggestion = random.choice(mid_suggestions)
-
-        else:
-            suggestion = random.choice(low_suggestions)
-
-        suggestions.append(f"หัวข้อ {topic} {suggestion}")
-
-    return suggestions
 
 
 def create_topic_chart(topic_stats):
@@ -266,7 +276,7 @@ def generate_exam_pdf(student_name, level, test_type, score, total, result_detai
 
     chart_path = create_topic_chart(topic_stats)
     chart = Image(chart_path, width=360, height=225)
-    suggestions = generate_suggestion(topic_stats)
+    suggestions = RandomSuggestion.generate_suggestion(topic_stats)
 
     # elements.append(Spacer(1, 20))
     advice = Paragraph("คำแนะนำ", sub_title_style)
@@ -450,157 +460,159 @@ def get_secret(key, default=None):
     return os.getenv(key, default)
 
 
-def send_exam_result_email(question_path, student_name, level, test_type, score, total, result_detail):
+class EmailServicec:
 
-    sender_email = get_secret("EMAIL_USER")
-    sender_password = get_secret("EMAIL_PASS")
-    receiver_emails = get_secret("EMAIL_RECEIVER")
+    SMTP_SERVER = "smtp.gmail.com"
+    SMTP_TLS_PORT = 587
+    SMTP_SSL_PORT = 465
 
-    date = datetime.now().strftime("%Y-%m-%d")
-    result_pdf_path = generate_exam_pdf(
+    @staticmethod
+    def _get_secret(key, default=None):
+        if key in st.secrets:
+            return st.secrets[key]
+        return os.getenv(key, default)
+
+    @staticmethod
+    def _get_credentials():
+        return (
+            EmailServicec._get_secret("EMAIL_USER"),
+            EmailServicec._get_secret("EMAIL_PASS"),
+            EmailServicec._get_secret("EMAIL_RECEIVER"),
+        )
+
+    @staticmethod
+    def _normalize_receivers(receivers):
+        return receivers if isinstance(receivers, list) else [receivers]
+
+    @staticmethod
+    def _attach_file(msg, file_path):
+        if not os.path.exists(file_path):
+            return
+
+        with open(file_path, "rb") as f:
+            part = MIMEBase("application", "pdf")
+            part.set_payload(f.read())
+
+        encoders.encode_base64(part)
+        part.add_header(
+            "Content-Disposition",
+            f'attachment; filename="{os.path.basename(file_path)}"',
+        )
+        msg.attach(part)
+
+    @staticmethod
+    def _send_smtp(sender, password, receivers, msg, use_ssl=False):
+        try:
+            if use_ssl:
+                server = smtplib.SMTP_SSL(
+                    EmailServicec.SMTP_SERVER,
+                    EmailServicec.SMTP_SSL_PORT,
+                    timeout=10,
+                )
+            else:
+                server = smtplib.SMTP(
+                    EmailServicec.SMTP_SERVER,
+                    EmailServicec.SMTP_TLS_PORT,
+                )
+                server.starttls()
+
+            server.login(sender, password)
+            server.send_message(msg)
+            server.quit()
+            return True
+
+        except smtplib.SMTPAuthenticationError:
+            st.error("❌ Email login failed. ตรวจสอบ App Password")
+        except smtplib.SMTPException as e:
+            st.error(f"❌ SMTP Error: {e}")
+        except Exception as e:
+            st.error(f"❌ Unexpected Error: {e}")
+
+        return False
+
+    @staticmethod
+    def send_exam_result_email(
+        question_path,
         student_name,
         level,
         test_type,
         score,
         total,
-        result_detail
-    )
-    pdf_question_path = generate_question_pdf(question_path)
+        result_detail,
+    ):
+        sender, password, receivers = EmailServicec._get_credentials()
+        receivers = EmailServicec._normalize_receivers(receivers)
 
-    subject = f"ผลสอบ {student_name} ระดับ {level.upper()} ({test_type}) - {date}"
+        date = datetime.now().strftime("%Y-%m-%d")
 
-    body = f"""
-    รายงานผลการสอบ
+        result_pdf = generate_exam_pdf(
+            student_name, level, test_type, score, total, result_detail
+        )
+        question_pdf = generate_question_pdf(question_path)
 
-    ชื่อผู้สอบ: {student_name}
-    ระดับ: {level.upper()}
-    ประเภทการสอบ: {test_type}
-    คะแนน: {score} / {total}
+        subject = f"ผลสอบ {student_name} ระดับ {level.upper()} ({test_type}) - {date}"
+        body = f"""
+รายงานผลการสอบ
 
-    ไฟล์รายละเอียดผลสอบแนบมาใน PDF
-    """
+ชื่อผู้สอบ: {student_name}
+ระดับ: {level.upper()}
+ประเภทการสอบ: {test_type}
+คะแนน: {score} / {total}
 
-    msg = MIMEMultipart()
-    msg["From"] = sender_email
-    msg["To"] = ", ".join(receiver_emails) if isinstance(
-        receiver_emails, list) else receiver_emails
-    msg["Subject"] = subject
+ไฟล์รายละเอียดผลสอบแนบมาใน PDF
+"""
 
-    msg.attach(MIMEText(body, "plain"))
+        msg = MIMEMultipart()
+        msg["From"] = sender
+        msg["To"] = ", ".join(receivers)
+        msg["Subject"] = subject
 
-    # Attach result PDF
-    with open(result_pdf_path, "rb") as f:
-        part1 = MIMEBase("application", "pdf")
-        part1.set_payload(f.read())
+        msg.attach(MIMEText(body, "plain"))
 
-    encoders.encode_base64(part1)
+        # Attach files
+        EmailServicec._attach_file(msg, result_pdf)
+        EmailServicec._attach_file(msg, question_pdf)
 
-    part1.add_header(
-        "Content-Disposition",
-        f'attachment; filename="{os.path.basename(result_pdf_path)}"'
-    )
+        success = EmailServicec._send_smtp(sender, password, receivers, msg)
 
-    msg.attach(part1)
-
-    # Attach question PDF
-    with open(pdf_question_path, "rb") as f:
-        part2 = MIMEBase("application", "pdf")
-        part2.set_payload(f.read())
-
-    encoders.encode_base64(part2)
-
-    part2.add_header(
-        "Content-Disposition",
-        f'attachment; filename="{os.path.basename(pdf_question_path)}"'
-    )
-
-    msg.attach(part2)
-
-    try:
-        server = smtplib.SMTP("smtp.gmail.com", 587)
-        server.starttls()
-        server.login(sender_email, sender_password)
-
-        server.send_message(msg)
-        server.quit()
-
-        return True
-
-    except Exception as e:
-        st.error(f"เกิดข้อผิดพลาดในการส่งอีเมล: {e}")
-        return False
-
-    finally:
-        for path in [result_pdf_path, pdf_question_path]:
-            if os.path.exists(path):
+        # Cleanup
+        for path in [result_pdf, question_pdf]:
+            if path and os.path.exists(path):
                 os.remove(path)
-        if os.path.exists(chart_path):
+
+        if "chart_path" in globals() and os.path.exists(chart_path):
             os.remove(chart_path)
 
+        return success
 
-current_dir = os.path.dirname(__file__)
-project_root = os.path.abspath(os.path.join(current_dir, ".."))
-env_path = os.path.join(project_root, "secrect", ".env")
-load_dotenv(env_path)
+    @staticmethod
+    def send_email(name, grade, phone):
+        sender, password, receivers = EmailServicec._get_credentials()
+        receivers = EmailServicec._normalize_receivers(receivers)
 
-
-def send_email(name, grade, phone):
-    try:
-        # --------- Load Secrets ----------
-        sender_email = get_secret("EMAIL_USER")
-        sender_password = get_secret("EMAIL_PASS")
-        receiver_emails = get_secret("EMAIL_RECEIVER")
-
-        if isinstance(receiver_emails, str):
-            receiver_emails = [receiver_emails]
-
-        # --------- Email Content ----------
         subject = "มีผู้สมัครเรียนใหม่ - ZeeU TUTOR"
         body = f"""
-        ========================================
-                📌 แจ้งเตือนผู้สมัครเรียนใหม่
-        ========================================
+========================================
+📌 แจ้งเตือนผู้สมัครเรียนใหม่
+========================================
 
-        👤 ชื่อ-นามสกุล : {name}
-        🎓 ระดับชั้น     : {grade}
-        📞 เบอร์โทรศัพท์ : {phone}
+👤 ชื่อ-นามสกุล : {name}
+🎓 ระดับชั้น     : {grade}
+📞 เบอร์โทรศัพท์ : {phone}
 
-        ----------------------------------------
-        กรุณาติดต่อกลับโดยเร็วที่สุด
-        ========================================
-        """
+----------------------------------------
+กรุณาติดต่อกลับโดยเร็วที่สุด
+========================================
+"""
 
         msg = MIMEText(body, "plain", "utf-8")
         msg["Subject"] = subject
-        msg["From"] = sender_email
-        msg["To"] = ", ".join(receiver_emails)
+        msg["From"] = sender
+        msg["To"] = ", ".join(receivers)
 
-        # --------- Send Email ----------
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=10) as server:
-            server.login(sender_email, sender_password)
-            server.sendmail(
-                sender_email,
-                receiver_emails,
-                msg.as_string()
-            )
-
-        return True
-
-    except KeyError as e:
-        st.error(f"❌ Missing secret key: {e}")
-        return False
-
-    except smtplib.SMTPAuthenticationError:
-        st.error("❌ Email login failed. ตรวจสอบ App Password")
-        return False
-
-    except smtplib.SMTPException as e:
-        st.error(f"❌ SMTP Error: {e}")
-        return False
-
-    except Exception as e:
-        st.error(f"❌ Unexpected Error: {e}")
-        return False
+        return EmailServicec._send_smtp(
+            sender, password, receivers, msg, use_ssl=True
+        )
 
 
 class Validator:

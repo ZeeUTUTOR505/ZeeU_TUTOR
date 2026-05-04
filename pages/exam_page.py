@@ -74,10 +74,6 @@ class ExamPage:
             st.write(q["question"])
 
             if q.get("image"):
-
-                print(f"Debug: Found image for question {i}: {q['image']}")
-                print(f"Debug: Checking image path: {os.path.join(BASE_DIR)}")
-                print(os.getcwd())
                 image_path = os.path.join(BASE_DIR, q["image"])
                 if os.path.exists(image_path):
                     st.image(image_path, width=300)

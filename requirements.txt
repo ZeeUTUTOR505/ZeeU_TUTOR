@@ -4,3 +4,4 @@ reportlab
 PyPDF2
 matplotlib
 pillow
+python-dotenv
