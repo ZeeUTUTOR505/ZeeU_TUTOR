@@ -39,7 +39,9 @@ class ExamPage:
 
         if st.session_state.password_type == "prelearn":
             test_type = "prelearn"
-            exam_set = 1
+
+            if exam_set != 5:
+                exam_set = 1
 
         if st.button("เริ่ม"):
             if not name:
