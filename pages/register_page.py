@@ -12,17 +12,17 @@ class RegisterPage:
 
         st.title("สมัครเรียน")
 
-        name = st.text_input("ชื่อ")
-        grade = st.text_input("ระดับ")
-        phone = st.text_input("เบอร์")
+        name = st.text_input("ชื่อ-นามสกุล")
+        grade = st.text_input("ระดับชั้น")
+        phone = st.text_input("เบอร์ติดต่อ")
 
         if st.button("สมัคร"):
             if not name:
-                st.warning("กรอกชื่อ")
+                st.warning("กรุณากรอกชื่อ")
             elif not grade:
-                st.warning("กรอกระดับ")
+                st.warning("กรุณากรอกระดับชั้น")
             elif not Validator.is_valid_phone(phone):
-                st.warning("เบอร์ไม่ถูกต้อง")
+                st.warning("กรุณากรอกเบอร์ติดต่อให้ถูกต้อง")
             else:
                 success = EmailService.send_register(name, grade, phone)
 
