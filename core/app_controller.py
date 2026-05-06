@@ -5,6 +5,7 @@ from pages.home_page import HomePage
 from pages.select_exam_page import SelectExamPage
 from pages.exam_page import ExamPage
 from pages.register_page import RegisterPage
+from pages.game_page import GamePage
 
 
 class AppController:
@@ -28,3 +29,6 @@ class AppController:
 
         elif page == "register":
             RegisterPage(self.state).render()
+
+        elif page == "game":
+            GamePage(self.state).render()

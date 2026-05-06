@@ -41,14 +41,14 @@ class HomePage:
         """, unsafe_allow_html=True)
 
         # Navbar
-        nav1, nav2, nav3, nav4, nav5, nav6, nav7, nav8 = st.columns(
-            [2.5, 1.3, 1, 1, 1, 1, 1, 1]
+        nav1, nav2, nav3, nav4, nav5, nav6, nav7, nav8, nav9 = st.columns(
+            [2.5, 1.3, 1, 1, 1, 1, 1, 1, 1]
         )
         with nav1:
             st.markdown("### ZeeU TUTOR")
 
         with nav2:
-            if st.button("ทดสอบก่อนสมัคร"):
+            if st.button("ทดสอบก่อนเรียน"):
                 st.session_state.password_type = "prelearn"
                 st.toast("🧠 เริ่มทำแบบทดสอบก่อนเรียน", icon="📝")
                 st.session_state.ask_password = True
@@ -77,6 +77,10 @@ class HomePage:
         with nav8:
             if st.button("🧪 ทดลองเรียน"):
                 st.toast("✨ ทดลองเรียนและทดสอบความรู้ฟรีก่อนตัดสินใจ", icon="✨")
+
+        with nav9:
+            if st.button("🎮 เกม 24"):
+                self.state.go("game")
 
         if st.session_state.ask_password:
             render_password_modal(self.state)
