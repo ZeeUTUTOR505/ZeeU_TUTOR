@@ -82,6 +82,73 @@ class GamePage:
         return results
 
     def render(self):
+        st.markdown("""
+<style>
+
+@keyframes float {
+    0% {transform: translateY(0px);}
+    50% {transform: translateY(-6px);}
+    100% {transform: translateY(0px);}
+}
+
+.game-card {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+    animation: float 3s ease-in-out infinite;
+}
+
+.game-number {
+    font-size: 32px;
+    font-weight: bold;
+    color: #f8fafc;
+    letter-spacing: 2px;
+}
+
+.target-box {
+    background: linear-gradient(90deg, #7c3aed, #2563eb);
+    padding: 14px;
+    border-radius: 16px;
+    text-align: center;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+.player-box {
+    background: rgba(255,255,255,0.05);
+    padding: 10px 18px;
+    border-radius: 14px;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.stButton>button {
+    width: 100%;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(90deg,#ec4899,#8b5cf6);
+    color: white;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.stButton>button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(168,85,247,0.7);
+}
+
+html, body, [data-testid="stAppViewContainer"] {
+    background: #020617;
+    color: white;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
         if st.button("⬅ กลับ"):
             self.state.go("home")
