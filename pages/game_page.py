@@ -6,6 +6,7 @@ import operator
 import random
 from collections import Counter
 import hashlib
+from fractions import Fraction
 
 
 class GamePage:
@@ -41,20 +42,49 @@ class GamePage:
             f"({a}{op1_sym}{b}){op2_sym}({c}{op3_sym}{d})"
         ]
 
+    # def solve_num(self, nums, ans):
+    #     for perm in itertools.permutations(nums):
+    #         a, b, c, d = perm
+    #         for op1 in self.ops:
+    #             for op2 in self.ops:
+    #                 for op3 in self.ops:
+    #                     expressions = self.generate_expressions(
+    #                         a, b, c, d, op1, op2, op3)
+    #                     for expr in expressions:
+    #                         try:
+    #                             if abs(eval(expr) - ans) < 1e-6:
+    #                                 return expr
+    #                         except ZeroDivisionError:
+    #                             continue
+    #     return None
+
     def solve_num(self, nums, ans):
-        for perm in itertools.permutations(nums):
-            a, b, c, d = perm
+
+        ans = Fraction(ans)
+
+        for perm in set(itertools.permutations(nums)):
+
+            a, b, c, d = map(Fraction, perm)
+
             for op1 in self.ops:
                 for op2 in self.ops:
                     for op3 in self.ops:
+
                         expressions = self.generate_expressions(
-                            a, b, c, d, op1, op2, op3)
+                            a, b, c, d,
+                            op1, op2, op3
+                        )
+
                         for expr in expressions:
                             try:
-                                if abs(eval(expr) - ans) < 1e-6:
+                                result = eval(expr)
+
+                                if result == ans:
                                     return expr
+
                             except ZeroDivisionError:
                                 continue
+
         return None
 
     def generate_solvable_sets(self, n, ans, seed):
@@ -198,5 +228,25 @@ html, body, [data-testid="stAppViewContainer"] {
                 st.write(f"{i}. {item['digits']}")
 
             with col2:
+
                 if st.button(f"เฉลย {i}"):
-                    st.success("ไม่บอกหรอก 😄")
+
+                    pwd_key = f"pwd_open_{i}"
+
+                    st.session_state[pwd_key] = True
+
+                pwd_key = f"pwd_open_{i}"
+
+                if st.session_state.get(pwd_key, False):
+
+                    password = st.text_input(
+                        "รหัสผ่าน",
+                        type="password",
+                        key=f"pwd_input_{i}"
+                    )
+
+                    if password == "game24":
+                        st.success(item["solution"])
+
+                    elif password:
+                        st.error("รหัสผ่านไม่ถูกต้อง")
