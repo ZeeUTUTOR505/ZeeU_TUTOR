@@ -258,5 +258,21 @@
     "answer": "127.5",
     "topic": "เรขาคณิต",
     "image": "images/m4/pretest1/q16.png"
+  },
+  {
+    "no": 17,
+    "question": "จงหา",
+    "choices": ["49", "30", "40", "44", "45", "46", "47", "48", "49", "50"],
+    "answer": "45",
+    "topic": "จำนวนและการคำนวณ",
+    "image": "images/m4/pretest1/q17.png"
+  },
+  {
+    "no": 18,
+    "question": "จงหา",
+    "choices": ["49", "51", "50", "44", "98", "102", "105", "100", "85", "90"],
+    "answer": "45",
+    "topic": "เรขาคณิต",
+    "image": "images/m4/pretest1/q18.png"
   }
 ]
