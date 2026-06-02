@@ -11,7 +11,7 @@ class SelectExamPage:
         st.title("เลือกระดับข้อสอบ")
 
         cols = st.columns(3)
-        levels = ["m1", "m2", "m3", "m4", "m5", "m6"]
+        levels = ["m1", "m2", "m3", "m4", "m5", "m6", "pcc1", "pcc4"]
 
         for i, lvl in enumerate(levels):
             with cols[i % 3]:
