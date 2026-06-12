@@ -180,7 +180,7 @@
     "choices": ["1", "2", "4", "6", "7", "8", "9", "10", "11", "12"],
     "answer": "10",
     "topic": "พีชคณิต",
-    "image": null
+    "image": "images/pcc4/pretest4/q16.png"
   },
   {
     "no": 17,
@@ -266,7 +266,7 @@
     "choices": ["-2", "-1", "0", "1", "2", "3", "4", "5", "6", "7"],
     "answer": "-1",
     "topic": "สมการ",
-    "image": null
+    "image": "images/pcc4/pretest4/q24.png"
   },
   {
     "no": 25,
@@ -274,6 +274,6 @@
     "choices": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
     "answer": "7",
     "topic": "โจทย์ปัญหาประยุกต์",
-    "image": null
+    "image": "images/pcc4/pretest4/q25.png"
   }
 ]
