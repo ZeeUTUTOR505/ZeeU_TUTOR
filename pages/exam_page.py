@@ -22,6 +22,9 @@ class ExamPage:
 
     def render_start(self):
 
+        if st.button("⬅ กลับ"):
+            self.state.go("home")
+
         name = st.text_input("ชื่อ")
         name = clean_student_name(name)
 
@@ -33,15 +36,12 @@ class ExamPage:
 
         exam_set = st.radio(
             "ชุดข้อสอบ",
-            [1, 2, 3, 4, 5],
+            [*range(1, 11)],
             horizontal=True
         )
 
         if st.session_state.password_type == "prelearn":
             test_type = "prelearn"
-
-            if exam_set != 5:
-                exam_set = 1
 
         if st.button("เริ่ม"):
             if not name:
@@ -58,6 +58,9 @@ class ExamPage:
         name = st.session_state.student_name
         seed = hash(name)
         rnd = random.Random(seed)
+
+        if st.button("⬅ กลับ"):
+            self.state.go("home")
 
         st.title(f"ข้อสอบ {level.upper()}")
         st.write(f"👤 {name}")

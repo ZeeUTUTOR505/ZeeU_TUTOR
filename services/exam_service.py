@@ -1,5 +1,6 @@
 import random
 from utils.question_loader import load_questions
+from pathlib import Path
 
 
 class ExamService:
@@ -16,6 +17,8 @@ class ExamService:
     @staticmethod
     def load(level, test_type, exam_set, student_name):
         path = ExamService.get_path(level, test_type, exam_set)
+        if not Path(path).exists():
+            path = ExamService.get_path(level, test_type, 1)
         questions = load_questions(path)
 
         rnd = random.Random(hash(student_name))
