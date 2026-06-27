@@ -1,0 +1,255 @@
+[
+  {
+    "no": 1,
+    "question": "กำหนดให้ x = 1 + (20√5 - 1)/2 แล้วค่าของ (4x³ - 2003x - 2000)^2569 มีค่าเท่าใด?",
+    "choices": [
+      "-8",
+      "-1",
+      "0",
+      "1",
+      "8",
+      "0.5 ^ 2569",
+      "-0.5 ^ 2569",
+      "0.5 ^ 2569",
+      "-0.5 ^ 2569",
+      "2 ^ 2569",
+      "-2 ^ 2569",
+      "4 ^ 2569"
+    ],
+    "answer": "-1",
+    "topic": "",
+    "image": "images/pcc4/pretest7/q1.png"
+  },
+  {
+    "no": 2,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 3,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 4,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 5,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 6,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 7,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 8,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 9,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 10,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 11,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 12,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 13,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 14,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 15,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 16,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 17,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 18,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 19,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 20,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 21,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 22,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 23,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 24,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 25,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 26,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 27,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 28,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 29,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  },
+  {
+    "no": 30,
+    "question": "",
+    "choices": ["", "", "", "", "", "", "", "", "", ""],
+    "answer": "",
+    "topic": "",
+    "image": null
+  }
+]
