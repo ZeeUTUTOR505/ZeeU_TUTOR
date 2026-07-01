@@ -215,7 +215,9 @@ def generate_exam_pdf(student_name, level, test_type, score, total, result_detai
         [Paragraph("ประเภทการสอบ", label_style),
          Paragraph(test_type, value_style)],
         [Paragraph("คะแนน", label_style), Paragraph(
-            f"{score} / {total}", value_style)]
+            f"{score} / {total}", value_style)],
+        [Paragraph("เปอร์เซ็นต์", label_style), Paragraph(
+            f"{round(score/total*100)}%", value_style)]
     ]
     info_table = Table(data_info, colWidths=[100, 300])
 
@@ -558,6 +560,7 @@ class EmailServicec:
 ระดับ: {level.upper()}
 ประเภทการสอบ: {test_type}
 คะแนน: {score} / {total}
+เปอร์เซ็นต์: {round(score/total*100)}%
 
 ไฟล์รายละเอียดผลสอบแนบมาใน PDF
 """
