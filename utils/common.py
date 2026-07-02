@@ -280,7 +280,6 @@ def generate_exam_pdf(student_name, level, test_type, score, total, result_detai
     chart = Image(chart_path, width=360, height=225)
     suggestions = RandomSuggestion.generate_suggestion(topic_stats)
 
-    # elements.append(Spacer(1, 20))
     advice = Paragraph("คำแนะนำ", sub_title_style)
 
     suggest = []
@@ -322,7 +321,6 @@ def generate_exam_pdf(student_name, level, test_type, score, total, result_detai
     template = PageTemplate(
         id="test",
         frames=frame,
-        # onPageEnd=add_watermark
         onPage=add_watermark
     )
 
@@ -343,14 +341,10 @@ def generate_question_pdf(question_path):
     c = canvas.Canvas(pdf_file, pagesize=A4)
     width, height = A4
 
-    # Font
     pdfmetrics.registerFont(TTFont(
-        'THSarabun',
-        f"{BASE_DIR}/fonts/THSarabunNew.ttf"
+        'NotoSansThai',
+        f"{BASE_DIR}/fonts/NotoSansThai-Regular.ttf"
     ))
-    c.setFont('THSarabun', 16)
-
-    # Layout
     left_margin = 50
     right_margin = 50
     top_margin = 50
@@ -358,25 +352,105 @@ def generate_question_pdf(question_path):
 
     y = height - top_margin
 
+    def smart_font(text):
+        """Choose font per text block"""
+        return "NotoSansThai"
+
+    def is_thai(text):
+        return bool(re.search(r'[\u0E00-\u0E7F]', text or ""))
+
+    def unicode_to_html_sup(text):
+        SUPERSCRIPT_TO_NORMAL = str.maketrans({
+            "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4",
+            "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9",
+            "⁺": "+", "⁻": "-", "⁽": "(", "⁾": ")"
+        })
+
+        def repl(match):
+            exp = match.group(0).translate(SUPERSCRIPT_TO_NORMAL)
+            return f"<sup>{exp}</sup>"
+
+        return re.sub(r"[⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁽⁾]+", repl, text or "")
+
+    def normalize_text(text):
+        if not text:
+            return ""
+
+        text = unicode_to_html_sup(text)
+        replace_map = {
+            "π": "pi",
+            "×": " × ",
+            "÷": " ÷ ",
+            "−": "-",
+            "□": "A",
+            "≠": "!=",
+            "≤": "<=",
+            "≥": ">=",
+            "√": "√",
+        }
+        for k, v in replace_map.items():
+            text = text.replace(k, v)
+
+        def convert_power_to_html(match):
+            exp = match.group(1).replace("(", "").replace(")", "")
+            return f"<sup>{exp}</sup>"
+
+        text = re.sub(r"\\?\^(-?\d+|\(\-?\d+\))", convert_power_to_html, text)
+        text = re.sub(r"\s+", " ", text).strip()
+
+        return text
+
+    def set_font(text, size=16):
+        c.setFont(smart_font(text), size)
+
     def check_page_space(required_height):
         nonlocal y
         if y - required_height < bottom_margin:
             c.showPage()
-            c.setFont('THSarabun', 16)
             y = height - top_margin
 
-    def normalize_text(text):
-        return text.replace("π", "pi")
+    def wrap_text(text, max_width):
+        words = text.split(" ")
+        lines = []
+        current = ""
+
+        for w in words:
+            test = current + " " + w if current else w
+
+            if c.stringWidth(test, smart_font(text), 16) < max_width:
+                current = test
+            else:
+                lines.append(current)
+                current = w
+
+        if current:
+            lines.append(current)
+
+        return lines
 
     def draw_multiline_text(text):
         nonlocal y
-        wrapped = textwrap.wrap(text, width=90)
-        for line in wrapped:
-            check_page_space(20)
-            c.drawString(left_margin, y, line)
-            y -= 20
 
-    def draw_solution_lines(num_lines=5):
+        max_width = width - left_margin - right_margin
+
+        thai_paragraph_style = ParagraphStyle(
+            name='ThaiParagraphStyle',
+            fontName='NotoSansThai',
+            fontSize=16,
+            leading=22,
+            textColor='black'
+        )
+
+        p = Paragraph(str(text), thai_paragraph_style)
+        p_width, p_height = p.wrap(max_width, y)
+
+        check_page_space(p_height)
+
+        y -= p_height
+        p.drawOn(c, left_margin, y)
+        y -= 15
+
+    def draw_solution_lines(num_lines=9):
         nonlocal y
         for _ in range(num_lines):
             check_page_space(20)
@@ -384,75 +458,86 @@ def generate_question_pdf(question_path):
             y -= 20
 
     def estimate_text_height(text):
-        wrapped = textwrap.wrap(text, width=90)
+        wrapped = textwrap.wrap(str(text), width=90)
         return len(wrapped) * 20
+
+    def format_choices(choices):
+        if isinstance(choices, list):
+            return " , ".join([f"{c}" for c in choices])
+        return str(choices)
 
     for item in data:
         no = item["no"]
-        question = normalize_text(item["question"])
-        answer = item["answer"]
-        choices = item["choices"]
 
-        # Estimate space
-        q_height = estimate_text_height(f"{no}. {question}")
-        c_height = estimate_text_height(f"ตัวเลือก: {choices}")
-        a_height = estimate_text_height(f"คำตอบ: {answer}")
-        solution_height = 5 * 20 + 20
+        question = normalize_text(item.get("question", ""))
+        answer = normalize_text(item.get("answer", ""))
+        raw_choices = item.get("choices", "")
+        if isinstance(raw_choices, list):
+            choices_str = format_choices(raw_choices)
+        else:
+            choices_str = str(raw_choices)
+
+        choices = normalize_text(choices_str)
+
+        q_text = f"{no}. {question}"
+        c_text = f"ตัวเลือก: {format_choices(choices)}"
+        a_text = f"คำตอบ: {answer}"
+
+        # estimate space
+        q_height = estimate_text_height(q_text)
+        c_height = estimate_text_height(c_text)
+        a_height = estimate_text_height(a_text)
+        solution_height = 9 * 20 + 20
 
         img_height = 0
-        if "image" in item and item["image"]:
+        if item.get("image"):
             try:
                 img = ImageReader(f"{BASE_DIR}/{item['image']}")
                 img_w, img_h = img.getSize()
 
                 max_width = width - left_margin - right_margin
                 scale = min(max_width / img_w, 0.4)
+
                 img_height = img_h * scale + 10
             except:
                 pass
 
-        total_needed = q_height + img_height + \
-            solution_height + c_height + a_height + 40
+        total_needed = q_height + c_height + a_height + img_height + solution_height + 40
 
         if y - total_needed < bottom_margin:
             c.showPage()
-            c.setFont('THSarabun', 16)
             y = height - top_margin
 
-        draw_multiline_text(f"{no}. {question}")
-
+        draw_multiline_text(q_text)
         y -= 5
 
-        # Image
-        if "image" in item and item["image"]:
+        if item.get("image"):
             try:
                 img = ImageReader(f"{BASE_DIR}/{item['image']}")
                 img_w, img_h = img.getSize()
 
                 max_width = width - left_margin - right_margin
                 scale = min(max_width / img_w, 0.4)
+
                 img_w *= scale
                 img_h *= scale
 
                 check_page_space(img_h + 10)
+
                 c.drawImage(img, left_margin, y - img_h,
                             width=img_w, height=img_h)
+
                 y -= img_h + 10
             except:
                 pass
 
-        # Solution
-        draw_multiline_text(f"ตัวเลือก: {choices}")
+        draw_multiline_text(c_text)
         draw_multiline_text("วิธีทำ:")
-        draw_solution_lines(5)
-
-        # Answer
-        draw_multiline_text(f"คำตอบ: {answer}")
+        draw_solution_lines(9)
+        draw_multiline_text(a_text)
         y -= 20
 
-    # Save
     c.save()
-
     return pdf_file
 
 
