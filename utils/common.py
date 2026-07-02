@@ -342,8 +342,8 @@ def generate_question_pdf(question_path):
     width, height = A4
 
     pdfmetrics.registerFont(TTFont(
-        'NotoSansThai',
-        f"{BASE_DIR}/fonts/NotoSansThai-Regular.ttf"
+        'THSarabunNew',
+        f"{BASE_DIR}/fonts/THSarabunNew.ttf"
     ))
     left_margin = 50
     right_margin = 50
@@ -351,13 +351,6 @@ def generate_question_pdf(question_path):
     bottom_margin = 50
 
     y = height - top_margin
-
-    def smart_font(text):
-        """Choose font per text block"""
-        return "NotoSansThai"
-
-    def is_thai(text):
-        return bool(re.search(r'[\u0E00-\u0E7F]', text or ""))
 
     def unicode_to_html_sup(text):
         SUPERSCRIPT_TO_NORMAL = str.maketrans({
@@ -387,6 +380,8 @@ def generate_question_pdf(question_path):
             "≤": "<=",
             "≥": ">=",
             "√": "√",
+            "∛": " รากที่สามของ ",
+            "∜": " รากที่สี่ของ ",
         }
         for k, v in replace_map.items():
             text = text.replace(k, v)
@@ -414,7 +409,7 @@ def generate_question_pdf(question_path):
 
         thai_paragraph_style = ParagraphStyle(
             name='ThaiParagraphStyle',
-            fontName='NotoSansThai',
+            fontName='THSarabunNew',
             fontSize=font_size,
             leading=22,
             textColor='black'
@@ -510,10 +505,10 @@ def generate_question_pdf(question_path):
             except:
                 pass
 
-        draw_multiline_text(c_text, font_size=12)
-        draw_multiline_text("วิธีทำ:", font_size=12)
+        draw_multiline_text(c_text, font_size=14)
+        draw_multiline_text("วิธีทำ:", font_size=16)
         draw_solution_lines(9)
-        draw_multiline_text(a_text, font_size=12)
+        draw_multiline_text(a_text, font_size=16)
         y -= 20
 
     c.save()
