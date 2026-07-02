@@ -394,33 +394,12 @@ project_root = os.path.abspath(os.path.join(current_dir, ".."))
 
             return text
 
-        def set_font(text, size=16):
-            c.setFont(smart_font(text), size)
-
         def check_page_space(required_height):
             nonlocal y
             if y - required_height < bottom_margin:
                 c.showPage()
                 y = height - top_margin
 
-        def wrap_text(text, max_width):
-            words = text.split(" ")
-            lines = []
-            current = ""
-
-            for w in words:
-                test = current + " " + w if current else w
-
-                if c.stringWidth(test, smart_font(text), 16) < max_width:
-                    current = test
-                else:
-                    lines.append(current)
-                    current = w
-
-            if current:
-                lines.append(current)
-
-            return lines
 
         def draw_multiline_text(text, font_size=16):
             nonlocal y
