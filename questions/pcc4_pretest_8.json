@@ -5,7 +5,7 @@
     "choices": ["2", "4", "6", "8", "-4", "-1", "0", "1", "5", "3"],
     "answer": "2",
     "topic": "พหุนาม",
-    "image": null
+    "image": "images/pcc4/pretest8/q1.png"
   },
   {
     "no": 2,
@@ -13,7 +13,7 @@
     "choices": ["2", "2.5", "3", "3.5", "4", "4.5", "5", "0", "-1", "-2"],
     "answer": "3",
     "topic": "พีชคณิต",
-    "image": null
+    "image": "images/pcc4/pretest8/q2.png"
   },
   {
     "no": 3,
@@ -32,7 +32,7 @@
     ],
     "answer": "290",
     "topic": "พีชคณิต",
-    "image": null
+    "image": "images/pcc4/pretest8/q3.png"
   },
   {
     "no": 4,
@@ -104,7 +104,7 @@
     ],
     "answer": "1 / (x + 2)",
     "topic": "การจัดรูป",
-    "image": null
+    "image": "images/pcc4/pretest8/q8.png"
   },
   {
     "no": 9,
@@ -180,7 +180,7 @@
     ],
     "answer": "61",
     "topic": "พีชคณิต",
-    "image": null
+    "image": "images/pcc4/pretest8/q12.png"
   },
   {
     "no": 13,
@@ -202,7 +202,7 @@
     ],
     "answer": "1",
     "topic": "พีชคณิต",
-    "image": null
+    "image": "images/pcc4/pretest8/q13.png"
   },
   {
     "no": 14,
