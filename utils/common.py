@@ -36,6 +36,10 @@ current_dir = os.path.dirname(__file__)
 project_root = os.path.abspath(os.path.join(current_dir, ".."))
 env_path = os.path.join(project_root, "secrect", ".env")
 load_dotenv(env_path)
+chart_path = "topic_chart.png"
+SUBMIT_LOG_FILE = "submit_log.json"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+LOGO_PATH = os.path.join(BASE_DIR, "assets", "logo.png")
 
 
 class RandomSuggestion:
@@ -111,10 +115,19 @@ def add_watermark(canvas, doc):
 
     canvas.restoreState()
 
+    if doc.page == 1:
+        logo_width = 4.4 * cm
+        logo_height = 4.4 * cm
 
-chart_path = "topic_chart.png"
-SUBMIT_LOG_FILE = "submit_log.json"
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        canvas.drawImage(
+            LOGO_PATH,
+            x=1.0 * cm,
+            y=A4[1] - logo_height - 0.8 * cm,
+            width=logo_width,
+            height=logo_height,
+            preserveAspectRatio=True,
+            mask="auto",
+        )
 
 
 def create_topic_chart(topic_stats):
