@@ -1,11 +1,11 @@
 import streamlit as st
 from core.state_manager import StateManager
 
-from pages.home_page import HomePage
-from pages.select_exam_page import SelectExamPage
-from pages.exam_page import ExamPage
-from pages.register_page import RegisterPage
-from pages.game_page import GamePage
+from views.home_page import HomePage
+from views.select_exam_page import SelectExamPage
+from views.exam_page import ExamPage
+from views.register_page import RegisterPage
+from views.game_page import GamePage
 
 
 class AppController:
