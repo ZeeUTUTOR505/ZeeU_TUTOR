@@ -43,7 +43,7 @@
       "∀x [~p(x) ∨ (q(x, y) ∧ ~r(y))]",
       "∃x [~p(x) ∨ (~q(x, y) ∨ r(y))]"
     ],
-    "answer": "∃x [p(x) ∧ ∀y (~q(x, y) ∨ r(y))]",
+    "answer": "∃x [p(x) ∧  (~q(x, y) ∨ r(y))]",
     "topic": "ตรรกศาสตร์",
     "image": null
   },
