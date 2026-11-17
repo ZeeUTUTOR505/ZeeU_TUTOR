@@ -112,7 +112,7 @@ class ExamPage:
 
             score, detail = ExamService.score(user_answers)
 
-            st.success(f"คะแนนที่ได้ {score}/{len(questions)}")
+            percentage = (score / len(questions)) * 100
 
             with st.spinner("📤 กำลังส่งผลสอบ... กรุณารอสักครู่"):
 
@@ -130,6 +130,11 @@ class ExamPage:
                     name, level, st.session_state.test_type)
 
             st.success(f"✅ ผลสอบถูกส่งเข้าระบบแล้ว!")
+
+            if percentage >= 50:
+                st.success(f"🎉 ยินดีด้วย! ได้คะแนนเกินครึ่งเลยน้า")
+            else:
+                st.error(f"❌ เสียใจด้วย! คะแนนไม่ถึงครึ่งนะ ลองกลับไปทบทวนใหม่น้า")
 
         if st.button("⬅ กลับหน้าเลือกข้อสอบ"):
             st.session_state.page = "select_exam"
